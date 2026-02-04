@@ -99,17 +99,35 @@ char * excsnd(char * res, const char * data1, const char * data2, size_t size1, 
   return res;
 }
 
-size_t dgtsnd(const char* data1, const char* data2, size_t size1, size_t size2)
+size_t dgtsnd(const char * data1, const char * data2, size_t size1, size_t size2)
 {
   size_t count = 0;
   for (size_t i = 0; i < size2; i++)
   {
-    if (isdigit((unsigned char)data2[i]))
+    if (isdigit(data2[i]))
     {
       count++;
     }
   }
   return size1 + count;
+}
+
+char * dgtsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2)
+{
+  for (size_t i = 0; i < size1; i++)
+  {
+    res[i] = data1[i];
+  }
+  size_t k = size1;
+  for (size_t i = 0; i < size2; i++)
+  {
+    if (isdigit(data2[i]))
+    {
+      res[k++] = data2[i];
+    }
+  }
+  res[k] = 0;
+  return res;
 }
 
 int main()
@@ -123,4 +141,5 @@ int main()
   size_t cap2 = dgtsnd(data1, data2, size1, size2);
   char * res2 = reinterpret_cast< char * >(malloc(sizeof(char) * cap2));;
   std::cout << excsnd(res1, data1, data2, size1, size2) << "\n";
+  std::cout << dgtsnd(res2, data1, data2, size1, size2) << "\n";
 }
