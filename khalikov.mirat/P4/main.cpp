@@ -3,7 +3,19 @@
 #include <stdlib.h>
 #include <cctype>
 
-void extend(char ** data, size_t & capacity)
+namespace khalikov
+{
+  void extend(char ** data, size_t & capacity);
+  char * getline(std::istream & in, size_t & s);
+  size_t excsnd(const char * data1, const char * data2, size_t size1, size_t size2);
+  char * excsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2);
+  size_t dgtsnd(const char * data1, const char * data2, size_t size1, size_t size2);
+  char * dgtsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2);
+}
+
+
+
+void khalikov::extend(char ** data, size_t & capacity)
 {
   size_t new_capacity = capacity * 2;
   char * new_array = reinterpret_cast< char * >(malloc(sizeof(char) * new_capacity));;
@@ -23,7 +35,7 @@ void extend(char ** data, size_t & capacity)
   }
 }
 
-char * getline(std::istream & in, size_t & s)
+char * khalikov::getline(std::istream & in, size_t & s)
 {
   bool is_skipws = in.flags() & std::ios_base::skipws;
   if (is_skipws)
@@ -55,7 +67,7 @@ char * getline(std::istream & in, size_t & s)
   return result;
 }
 
-size_t excsnd(const char * data1, const char * data2, size_t size1, size_t size2)
+size_t khalikov::excsnd(const char * data1, const char * data2, size_t size1, size_t size2)
 {
   size_t size = 0;
   for (size_t i = 0; i < size1; i++)
@@ -77,7 +89,7 @@ size_t excsnd(const char * data1, const char * data2, size_t size1, size_t size2
   return size;
 }
 
-char * excsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2)
+char * khalikov::excsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2)
 {
   size_t k = 0;
   for (size_t i = 0; i < size1; i++)
@@ -100,7 +112,7 @@ char * excsnd(char * res, const char * data1, const char * data2, size_t size1, 
   return res;
 }
 
-size_t dgtsnd(const char * data1, const char * data2, size_t size1, size_t size2)
+size_t khalikov::dgtsnd(const char * data1, const char * data2, size_t size1, size_t size2)
 {
   size_t count = 0;
   for (size_t i = 0; i < size2; i++)
@@ -113,7 +125,7 @@ size_t dgtsnd(const char * data1, const char * data2, size_t size1, size_t size2
   return size1 + count;
 }
 
-char * dgtsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2)
+char * khalikov::dgtsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2)
 {
   for (size_t i = 0; i < size1; i++)
   {
@@ -133,22 +145,23 @@ char * dgtsnd(char * res, const char * data1, const char * data2, size_t size1, 
 
 int main()
 {
+  namespace kh = khalikov;
   size_t size1 = 0;
   size_t size2 = 0;
-  char * data1 = getline(std::cin, size1);
+  char * data1 = kh::getline(std::cin, size1);
   if (data1 == nullptr)
   {
     std::cerr << "Memory error";
     return 1;
   }
-  char * data2 = getline(std::cin, size2);
+  char * data2 = kh::getline(std::cin, size2);
   if (data2 == nullptr)
   {
     std::cerr << "Memory error";
     free(data1);
     return 1;
   }
-  size_t cap1 = excsnd(data1, data2, size1, size2);
+  size_t cap1 = kh::excsnd(data1, data2, size1, size2);
   char * res1 = reinterpret_cast< char * >(malloc(sizeof(char) * cap1));;
   if (res1 == nullptr)
   {
@@ -157,7 +170,7 @@ int main()
     free(data2);
     return 1;
   }
-  size_t cap2 = dgtsnd(data1, data2, size1, size2);
+  size_t cap2 = kh::dgtsnd(data1, data2, size1, size2);
   char * res2 = reinterpret_cast< char * >(malloc(sizeof(char) * cap2));;
   if (res2 == nullptr)
   {
@@ -167,8 +180,8 @@ int main()
     free(res1);
     return 1;
   }
-  std::cout << excsnd(res1, data1, data2, size1, size2) << "\n";
-  std::cout << dgtsnd(res2, data1, data2, size1, size2) << "\n";
+  std::cout << "EXC-SND: " <<kh::excsnd(res1, data1, data2, size1, size2) << "\n";
+  std::cout << "DGT-SND: " << kh::dgtsnd(res2, data1, data2, size1, size2) << "\n";
   free(data1);
   free(data2);
   free(res1);
