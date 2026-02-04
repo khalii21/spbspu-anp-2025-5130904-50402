@@ -9,7 +9,7 @@ namespace khalikov
   char * getline(std::istream & in, size_t & s);
   size_t excsnd(const char * data1, const char * data2, size_t size1, size_t size2);
   char * excsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2);
-  size_t dgtsnd(const char * data1, const char * data2, size_t size1, size_t size2);
+  size_t dgtsnd(const char * data2, size_t size1, size_t size2);
   char * dgtsnd(char * res, const char * data1, const char * data2, size_t size1, size_t size2);
 }
 
@@ -55,6 +55,10 @@ char * khalikov::getline(std::istream & in, size_t & s)
     if (i >= capacity-1)
     {
       extend(&result, capacity);
+    }
+    if (result == nullptr)
+    {
+      return nullptr;
     }
     result[i++] = ch;
   }
@@ -107,12 +111,12 @@ char * khalikov::excsnd(char * res, const char * data1, const char * data2, size
     {
       res[k++] = data1[i];
     }
-  res[k] = 0;
   }
+  res[k] = 0;
   return res;
 }
 
-size_t khalikov::dgtsnd(const char * data1, const char * data2, size_t size1, size_t size2)
+size_t khalikov::dgtsnd(const char * data2, size_t size1, size_t size2)
 {
   size_t count = 0;
   for (size_t i = 0; i < size2; i++)
@@ -170,7 +174,7 @@ int main()
     free(data2);
     return 1;
   }
-  size_t cap2 = kh::dgtsnd(data1, data2, size1, size2);
+  size_t cap2 = kh::dgtsnd(data2, size1, size2);
   char * res2 = reinterpret_cast< char * >(malloc(sizeof(char) * cap2));;
   if (res2 == nullptr)
   {
