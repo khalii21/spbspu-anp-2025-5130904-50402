@@ -1,14 +1,15 @@
 #include <iostream>
 #include <iomanip>
 #include <stdlib.h>
+#include <cctype>
 
 void extend(char ** data, size_t & capacity)
 {
   size_t new_capacity = capacity * 2;
-  char * new_array = reinterpret_cast< char * >(malloc(sizeof(char) * capacity));;
+  char * new_array = reinterpret_cast< char * >(malloc(sizeof(char) * new_capacity));;
   if (new_array == nullptr)
   {
-    throw std::bad_alloc();
+    *data = nullptr;
   }
   else
   {
@@ -35,7 +36,7 @@ char * getline(std::istream & in, size_t & s)
   char * result = reinterpret_cast< char * >(malloc(sizeof(char) * capacity));;
   if (result == nullptr)
   {
-    throw std::bad_alloc();
+    return nullptr;
   }
   while (in >> ch && ch != '\n')
   {
@@ -135,11 +136,41 @@ int main()
   size_t size1 = 0;
   size_t size2 = 0;
   char * data1 = getline(std::cin, size1);
+  if (data1 == nullptr)
+  {
+    std::cerr << "Memory error";
+    return 1;
+  }
   char * data2 = getline(std::cin, size2);
+  if (data2 == nullptr)
+  {
+    std::cerr << "Memory error";
+    free(data1);
+    return 1;
+  }
   size_t cap1 = excsnd(data1, data2, size1, size2);
   char * res1 = reinterpret_cast< char * >(malloc(sizeof(char) * cap1));;
+  if (res1 == nullptr)
+  {
+    std::cerr << "Memory error";
+    free(data1);
+    free(data2);
+    return 1;
+  }
   size_t cap2 = dgtsnd(data1, data2, size1, size2);
   char * res2 = reinterpret_cast< char * >(malloc(sizeof(char) * cap2));;
+  if (res2 == nullptr)
+  {
+    std::cerr << "Memory error";
+    free(data1);
+    free(data2);
+    free(res1);
+    return 1;
+  }
   std::cout << excsnd(res1, data1, data2, size1, size2) << "\n";
   std::cout << dgtsnd(res2, data1, data2, size1, size2) << "\n";
+  free(data1);
+  free(data2);
+  free(res1);
+  free(res2);
 }
